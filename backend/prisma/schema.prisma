@@ -1,0 +1,110 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  JOB_SEEKER
+  COMPANY
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  REMOTE
+  INTERNSHIP
+}
+
+enum ApplicationStatus {
+  APPLIED
+  REVIEWING
+  SHORTLISTED
+  REJECTED
+  ACCEPTED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(JOB_SEEKER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relasi jika user adalah Company
+  postedJobs Job[] @relation("CompanyJobs")
+
+  // Relasi jika user adalah Job Seeker
+  applications Application[] @relation("ApplicantApplications")
+
+  // Relasi pencatatan riwayat perubahan status oleh user
+  statusChanges ApplicationHistory[] @relation("ChangedByUser")
+
+  @@map("users")
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  companyId   String
+  title       String
+  companyName String
+  location    String
+  salaryMin   Int?
+  salaryMax   Int?
+  jobType     JobType  @default(FULL_TIME)
+  description String   @db.Text
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relasi ke User (Company yang membuat lowongan)
+  company User @relation("CompanyJobs", fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Relasi ke daftar lamaran
+  applications Application[]
+
+  @@map("jobs")
+}
+
+model Application {
+  id          String            @id @default(cuid())
+  jobId       String
+  applicantId String
+  status      ApplicationStatus @default(APPLIED)
+  notes       String?           @db.Text
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Relasi ke Job dan Pelamar
+  job       Job  @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicant User @relation("ApplicantApplications", fields: [applicantId], references: [id], onDelete: Cascade)
+
+  // Riwayat perubahan status
+  histories ApplicationHistory[]
+
+  // Constraint: Job Seeker tidak dapat melamar pekerjaan yang sama lebih dari satu kali
+  @@unique([jobId, applicantId])
+  @@map("applications")
+}
+
+model ApplicationHistory {
+  id             String             @id @default(cuid())
+  applicationId  String
+  previousStatus ApplicationStatus?
+  newStatus      ApplicationStatus
+  changedById    String
+  notes          String?            @db.Text
+  createdAt      DateTime           @default(now())
+
+  // Relasi ke Application dan User (yang mengubah status)
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  changedBy   User        @relation("ChangedByUser", fields: [changedById], references: [id])
+
+  @@map("application_histories")
+}
