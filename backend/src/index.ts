@@ -27,6 +27,13 @@ app.get("/", (req, res) => {
 // ─── Global Error Handler ─────────────────────────────────────
 app.use(errorHandler);
 
+// Tambahkan baris ini sebelum app.listen
+export default app;
+
+app.listen(PORT, () => {
+  console.log(`✅ Server berjalan di http://localhost:${PORT}`);
+});
+
 // ─── Start Server ─────────────────────────────────────────────
 app.listen(PORT, () => {
   console.log(`✅ Server berjalan di http://localhost:${PORT}`);
