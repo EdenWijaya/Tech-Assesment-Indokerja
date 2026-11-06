@@ -104,7 +104,7 @@ const JobListPage = () => {
         {loading ? (
           <p className="text-center text-gray-400 py-16">Memuat lowongan...</p>
         ) : jobs.length === 0 ? (
-          <p className="text-center text-gray-400 py-16">Tidak ada lowongan yang ditemukan.</p>
+          <p className="text-center text-gray-400 py-16">Tidak ada lowongan yang ditemukan</p>
         ) : (
           <div className="space-y-3">
             {jobs.map((job) => (

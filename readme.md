@@ -86,7 +86,7 @@ Aplikasi berjalan di **http://localhost:5173**
 - Membuat lowongan pekerjaan baru
 - Melihat daftar kandidat pelamar per lowongan
 - Mengubah status kandidat (Applied → Reviewing → Shortlisted → Rejected/Accepted)
-- Setiap perubahan status otomatis tercatat ke Application History
+- Setiap perubahan status otomatis tercatat ke Application Historyy
 
 ---
 
