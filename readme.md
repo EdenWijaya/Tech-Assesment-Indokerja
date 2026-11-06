@@ -28,7 +28,8 @@ Edit file `.env` dan isi `DATABASE_URL` dengan connection string PostgreSQL kamu
 
 ```env
 PORT=5000
-JWT_SECRET="connection string"
+JWT_SECRET=indokerja_super_secret_jwt_key_development_2026
+DATABASE_URL="connection string"
 ```
 
 ```bash
