@@ -33,14 +33,12 @@ app.get("/", (req, res) => {
 // ─── Global Error Handler ─────────────────────────────────────
 app.use(errorHandler);
 
-// Tambahkan baris ini sebelum app.listen
+// ─── Export untuk Vercel Serverless ───────────────────────────
 export default app;
 
-app.listen(PORT, () => {
-  console.log(`✅ Server berjalan di http://localhost:${PORT}`);
-});
-
-// ─── Start Server ─────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`✅ Server berjalan di http://localhost:${PORT}`);
-});
+// ─── Start Server (hanya di development lokal) ────────────────
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`✅ Server berjalan di http://localhost:${PORT}`);
+  });
+}
